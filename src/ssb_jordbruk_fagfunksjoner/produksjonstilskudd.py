@@ -25,7 +25,7 @@ class Produksjonstilskudd:
         The class is designed with immutability in mind for the 'codes' attribute to ensure consistent and error-free usage.
     """
 
-    codes: ClassVar[dict] = {
+    codes: ClassVar[dict[str, str]] = {
         "001": "Epler",
         "002": "Pærer",
         "003": "Plommer",
@@ -157,7 +157,7 @@ class Produksjonstilskudd:
         "882": "Annet areal (enn grovfor) i 1 års karens",
     }
 
-    code_groups: ClassVar[dict[list[str]]] = {
+    code_groups: ClassVar[dict[str, list[str]]] = {
         "frukt_avling": ["001", "002", "003", "004", "005", "006"],
         "frukt_areal": ["271", "272", "273", "274", "283", "863"],
         "baer_avling": ["011", "012", "013", "014", "016", "021", "022"],
@@ -235,7 +235,7 @@ class Produksjonstilskudd:
         ],
     }
 
-    combinations: ClassVar[dict[list[str]]] = {
+    combinations: ClassVar[dict[str, list[str]]] = {
         "frukt": ["frukt_avling", "frukt_areal"],
         "baer": ["baer_avling", "baer_areal"],
         "grovfor": ["grovfor_areal", "grovfor_salg"],
@@ -273,17 +273,22 @@ class Produksjonstilskudd:
             setattr(self, group_name, self._extract_from_codelist(codes))
 
         for combo_name, groups in self.combinations.items():
-            combined_dict = {}
+            combined_dict: dict[str, str] = {}
             for group in groups:
                 combined_dict.update(getattr(self, group, {}))
             setattr(self, combo_name, combined_dict)
 
-    def _extract_from_codelist(self, numbers: list) -> dict:
-        return {code: self.codes.get(code, None) for code in numbers}
+    def _extract_from_codelist(self, numbers: list[str]) -> dict[str, str]:
+        result = {}
+        for code in numbers:
+            if code not in self.codes:
+                raise ValueError(f"Code {code} not found in codes dictionary.")
+            result[code] = self.codes[code]
+        return result
 
     def get_codes(
-        self, attributes: str | list | None = None, prefix: bool | None = False
-    ) -> list:
+        self, attributes: str | list[str] | None = None, prefix: bool | None = False
+    ) -> list[str]:
         """Returns a list of 3-digit codes from the specified attributes.
 
         If no attributes are specified, this method returns all 3-digit codes available. Optionally, a 'PK_' prefix can be added to each code.
