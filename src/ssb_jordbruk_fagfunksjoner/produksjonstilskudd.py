@@ -309,10 +309,10 @@ class Produksjonstilskudd:
         --------
         >>> pt = Produksjonstilskudd()
         >>> pt.get_codes('frukt_avling', prefix=True)
-        "This would output all codes under the 'frukt_avling' category, prefixed with 'PK_'."
+        This would output all codes under the 'frukt_avling' category, prefixed with 'PK_'.
 
         >>> pt.get_codes()
-        "This would output all codes as strings consisting of three numbers."
+        This would output all codes as strings consisting of three numbers.
         """
         if attributes:
             if isinstance(attributes, str):  # Single attribute name
