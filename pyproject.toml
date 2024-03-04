@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ssb-jordbruk-fagfunksjoner"
-version = "0.0.0"
+version = "0.1.0"
 description = "SSB Jordbruk Fagfunksjoner"
 authors = ["Magnus Theodor Engh <dor@ssb.no>"]
 license = "MIT"
