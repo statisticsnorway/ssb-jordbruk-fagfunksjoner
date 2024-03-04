@@ -19,7 +19,7 @@ class Produksjonstilskudd:
     Example:
         >>> pt = Produksjonstilskudd()
         >>> print(pt.get_codes('frukt_avling', prefix=True))
-        This would output all codes under the 'frukt_avling' category, prefixed with 'PK_'.
+        ['PK_001', 'PK_002', 'PK_003', 'PK_004', 'PK_005', 'PK_006']
 
     Note:
         The class is designed with immutability in mind for the 'codes' attribute to ensure consistent and error-free usage.
@@ -309,10 +309,10 @@ class Produksjonstilskudd:
         --------
         >>> pt = Produksjonstilskudd()
         >>> pt.get_codes('frukt_avling', prefix=True)
-        "This would output all codes under the 'frukt_avling' category, prefixed with 'PK_'."
+        ['PK_001', 'PK_002', 'PK_003', 'PK_004', 'PK_005', 'PK_006']
 
         >>> pt.get_codes()
-        "This would output all codes as strings consisting of three numbers."
+        ['001', '002', '003', '004', '005', '006', '011', '012', '013', '014', '016', '021', '022', '031', '032', '033', '060', '115', '116', '118', '119', '120', '121', '139', '140', '142', '144', '145', '146', '154', '155', '156', '157', '158', '159', '161', '162', '168', '170', '171', '174', '175', '176', '178', '179', '180', '181', '183', '185', '192', '193', '194', '196', '197', '210', '211', '212', '213', '223', '230', '231', '235', '236', '237', '238', '239', '240', '242', '243', '245', '247', '264', '271', '272', '273', '274', '280', '282', '283', '285', '290', '292', '293', '294', '410', '411', '420', '422', '431', '432', '440', '445', '450', '455', '480', '481', '486', '487', '488', '521', '522', '523', '720', '721', '722', '723', '724', '725', '801', '802', '803', '810', '811', '821', '830', '833', '841', '852', '855', '861', '863', '864', '870', '871', '875', '876', '880', '881', '882']
         """
         if attributes:
             if isinstance(attributes, str):  # Single attribute name
