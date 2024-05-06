@@ -125,9 +125,9 @@ class Produksjonstilskudd:
         "486": "Hjort på beite",
         "487": "Sauer, født i fjor eller tidligere, beitetilskudd",
         "488": "Lam, født i år, beitetilskudd",
-        "521": "Høy",
-        "522": "Surfor",
-        "523": "Høyensilasje",
+        "521": "Salg av høy",
+        "522": "Salg av surfor",
+        "523": "Salg av høyensilasje",
         "720": "Storfe på utmarksbeite - Kyr av bevaringsverdig rase",
         "721": "Storfe på utmarksbeite - Okser av bevaringsverdig rase",
         "722": "Søyer av bevaringsverdig rase",
@@ -250,6 +250,14 @@ class Produksjonstilskudd:
             "andre_husdyr",
         ],
         "frukt_baer_groennsaker": ["frukt", "baer", "groennsaker"],
+    }
+
+    statbank_groups: ClassVar[dict[str, list[str]]] = {
+        "storfe": ["119", "120", "121"],
+        "ku": ["120", "121"],
+        "sau": ["145", "146", "139"],
+        "avlssvin": ["155", "156", "158", "159"],
+        "svin": ["154", "155", "156", "157", "158", "159"],
     }
 
     def __init__(self) -> None:
