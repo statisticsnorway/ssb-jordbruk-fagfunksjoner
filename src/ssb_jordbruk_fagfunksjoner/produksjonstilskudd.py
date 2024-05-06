@@ -252,6 +252,14 @@ class Produksjonstilskudd:
         "frukt_baer_groennsaker": ["frukt", "baer", "groennsaker"],
     }
 
+    statbank_groups: ClassVar[dict[str, list[str]]] = {
+        "storfe": ["119", "120", "121"],
+        "ku": ["120", "121"],
+        "sau": ["145", "146", "139"],
+        "avlssvin": ["155", "156", "158", "159"],
+        "svin": ["154", "155", "156", "157", "158", "159"],
+    }
+
     def __init__(self) -> None:
         """Initializes an instance of the Produksjonstilskudd class.
 
