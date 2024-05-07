@@ -253,11 +253,11 @@ class Produksjonstilskudd:
     }
 
     statbank_groups: ClassVar[dict[str, list[str]]] = {
-        "storfe": ["119", "120", "121"],
-        "ku": ["120", "121"],
-        "sau": ["145", "146", "139"],
-        "avlssvin": ["155", "156", "158", "159"],
-        "svin": ["154", "155", "156", "157", "158", "159"],
+        "statbank_storfe": ["119", "120", "121"],
+        "statbank_ku": ["120", "121"],
+        "statbank_sau": ["145", "146", "139"],
+        "statbank_avlssvin": ["155", "156", "158", "159"],
+        "statbank_svin": ["154", "155", "156", "157", "158", "159"],
     }
 
     def __init__(self) -> None:
@@ -285,6 +285,9 @@ class Produksjonstilskudd:
             for group in groups:
                 combined_dict.update(getattr(self, group, {}))
             setattr(self, combo_name, combined_dict)
+
+        for statbank_name, codes in self.statbank_groups.items():
+            setattr(self, statbank_name, self._extract_from_codelist(codes))
 
     def _extract_from_codelist(self, numbers: list[str]) -> dict[str, str]:
         result = {}
