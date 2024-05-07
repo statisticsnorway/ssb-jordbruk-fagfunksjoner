@@ -57,5 +57,16 @@ def test_dynamic_combinations_creation(
     ), "Instance should have 'frukt' combination attribute"
     combination = produksjonstilskudd_instance.frukt
     assert (
-        "001" in combination or "271" in combination
+        "001" in combination and "271" in combination
     ), "'frukt' combination should contain codes from its groups"
+
+
+def test_dynamic_statbank_creation(
+    produksjonstilskudd_instance: Produksjonstilskudd,
+) -> None:
+    assert hasattr(
+        produksjonstilskudd_instance, "statbank_storfe"
+    ), "Instance should have 'statbank_storfe' attribute"
+    assert isinstance(
+        produksjonstilskudd_instance.statbank_storfe, dict
+    ), "'statbank_storfe' should be a dictionary"
