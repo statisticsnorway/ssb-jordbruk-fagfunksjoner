@@ -252,12 +252,20 @@ class Produksjonstilskudd:
         "frukt_baer_groennsaker": ["frukt", "baer", "groennsaker"],
     }
 
-    statbank_groups: ClassVar[dict[str, list[str]]] = {
-        "statbank_storfe": ["119", "120", "121"],
-        "statbank_ku": ["120", "121"],
-        "statbank_sau": ["145", "146", "139"],
-        "statbank_avlssvin": ["155", "156", "158", "159"],
-        "statbank_svin": ["154", "155", "156", "157", "158", "159"],
+    table_groups: ClassVar[dict[str, list[str]]] = {
+        "tabell_storfe": ["119", "120", "121"],  # brukes i statbank
+        "tabell_ku": ["120", "121"],  # brukes i statbank
+        "tabell_sau": ["145", "146", "139"],  # brukes i statbank
+        "tabell_avlssvin": ["155", "156", "158", "159"],  # brukes i statbank
+        "tabell_svin": ["154", "155", "156", "157", "158", "159"],  # brukes i statbank
+        "tabell_purker": ["155", "158"],  # brukes i statbank
+        "tabell_geit": ["140", "142", "144"],
+        "tabell_hest": ["115", "116"],
+        "tabell_pelsdyr": ["170", "171"],
+        "tabell_hjort": ["178", "179"],
+        "tabell_ok_storfe": ["801", "158", "803"],
+        "tabell_ok_ku": ["801", "802"],
+        "tabell_ok_mageit": ["810", "811"],
     }
 
     def __init__(self) -> None:
@@ -286,8 +294,8 @@ class Produksjonstilskudd:
                 combined_dict.update(getattr(self, group, {}))
             setattr(self, combo_name, combined_dict)
 
-        for statbank_name, codes in self.statbank_groups.items():
-            setattr(self, statbank_name, self._extract_from_codelist(codes))
+        for table_name, codes in self.table_groups.items():
+            setattr(self, table_name, self._extract_from_codelist(codes))
 
     def _extract_from_codelist(self, numbers: list[str]) -> dict[str, str]:
         result = {}

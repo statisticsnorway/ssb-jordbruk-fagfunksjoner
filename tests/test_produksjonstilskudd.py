@@ -61,12 +61,12 @@ def test_dynamic_combinations_creation(
     ), "'frukt' combination should contain codes from its groups"
 
 
-def test_dynamic_statbank_creation(
+def test_dynamic_tabell_creation(
     produksjonstilskudd_instance: Produksjonstilskudd,
 ) -> None:
     assert hasattr(
-        produksjonstilskudd_instance, "statbank_storfe"
-    ), "Instance should have 'statbank_storfe' attribute"
+        produksjonstilskudd_instance, "tabell_storfe"
+    ), "Instance should have 'tabell_storfe' attribute"
     assert isinstance(
-        produksjonstilskudd_instance.statbank_storfe, dict
-    ), "'statbank_storfe' should be a dictionary"
+        produksjonstilskudd_instance.tabell_storfe, dict
+    ), "'tabell_storfe' should be a dictionary"
