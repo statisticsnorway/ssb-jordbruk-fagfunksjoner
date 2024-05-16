@@ -262,14 +262,14 @@ class Produksjonstilskudd:
     }
 
     interntabell_groups: ClassVar[dict[str, list[str]]] = {
-        "geit": ["140", "142", "144"],
-        "hest": ["115", "116"],
-        "pelsdyr": ["170", "171"],
-        "hjort": ["178", "179"],
-        "okstorfe": ["801", "158", "803"],
-        "okku": ["801", "802"],
-        "purker": ["155", "158"],
-        "okmageit": ["810", "811"],
+        "intern_geit": ["140", "142", "144"],
+        "intern_hest": ["115", "116"],
+        "intern_pelsdyr": ["170", "171"],
+        "intern_hjort": ["178", "179"],
+        "intern_ok_storfe": ["801", "158", "803"],
+        "intern_ok_ku": ["801", "802"],
+        "intern_purker": ["155", "158"],
+        "intern_ok_mageit": ["810", "811"],
     }
 
     def __init__(self) -> None:
