@@ -258,6 +258,18 @@ class Produksjonstilskudd:
         "statbank_sau": ["145", "146", "139"],
         "statbank_avlssvin": ["155", "156", "158", "159"],
         "statbank_svin": ["154", "155", "156", "157", "158", "159"],
+        "statbank_purker": ["155", "158"],
+    }
+
+    interntabell_groups: ClassVar[dict[str, list[str]]] = {
+        "geit": ["140", "142", "144"],
+        "hest": ["115", "116"],
+        "pelsdyr": ["170", "171"],
+        "hjort": ["178", "179"],
+        "okstorfe": ["801", "158", "803"],
+        "okku": ["801", "802"],
+        "purker": ["155", "158"],
+        "okmageit": ["810", "811"],
     }
 
     def __init__(self) -> None:
