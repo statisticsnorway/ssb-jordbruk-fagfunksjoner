@@ -11,10 +11,10 @@ def produksjonstilskudd_instance() -> Produksjonstilskudd:
 def test_get_codes_with_prefix(
     produksjonstilskudd_instance: Produksjonstilskudd,
 ) -> None:
-    """Test that get_codes correctly adds 'PK_' prefix."""
+    """Test that get_codes correctly adds 'pk_' prefix."""
     prefixed_codes = produksjonstilskudd_instance.get_codes("frukt_avling", prefix=True)
     for code in prefixed_codes:
-        assert code.startswith("PK_"), "All codes should be prefixed with 'PK_'"
+        assert code.startswith("pk_"), "All codes should be prefixed with 'pk_'"
 
 
 def test_get_codes_without_prefix(
@@ -24,8 +24,8 @@ def test_get_codes_without_prefix(
     codes = produksjonstilskudd_instance.get_codes("frukt_avling")
     for code in codes:
         assert not code.startswith(
-            "PK_"
-        ), "Codes should not have 'PK_' prefix by default"
+            "pk_"
+        ), "Codes should not have 'pk_' prefix by default"
 
 
 def test_get_codes_all(produksjonstilskudd_instance: Produksjonstilskudd) -> None:
