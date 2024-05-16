@@ -261,7 +261,7 @@ class Produksjonstilskudd:
         "statbank_purker": ["155", "158"],
     }
 
-    interntabell_groups: ClassVar[dict[str, list[str]]] = {
+    intern_groups: ClassVar[dict[str, list[str]]] = {
         "intern_geit": ["140", "142", "144"],
         "intern_hest": ["115", "116"],
         "intern_pelsdyr": ["170", "171"],
