@@ -263,7 +263,7 @@ class Produksjonstilskudd:
         "tabell_hest": ["115", "116"],
         "tabell_pelsdyr": ["170", "171"],
         "tabell_hjort": ["178", "179"],
-        "tabell_ok_storfe": ["801", "158", "803"],
+        "tabell_ok_storfe": ["801", "802", "803"],
         "tabell_ok_ku": ["801", "802"],
         "tabell_ok_mageit": ["810", "811"],
     }
