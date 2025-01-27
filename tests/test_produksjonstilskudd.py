@@ -3,6 +3,15 @@ import pytest
 from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import Produksjonstilskudd
 
 
+def test_direct_import() -> None:
+    try:
+        from ssb_jordbruk_fagfunksjoner import Produksjonstilskudd
+
+        assert isinstance(Produksjonstilskudd(), Produksjonstilskudd)
+    except ImportError:
+        pytest.fail("Failed to import 'Produksjonstilskudd' module")
+
+
 @pytest.fixture()
 def produksjonstilskudd_instance() -> Produksjonstilskudd:
     return Produksjonstilskudd()
