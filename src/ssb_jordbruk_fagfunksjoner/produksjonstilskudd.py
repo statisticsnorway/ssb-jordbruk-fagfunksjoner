@@ -268,7 +268,7 @@ class Produksjonstilskudd:
         "tabell_ok_mageit": ["810", "811"],
     }
 
-    def __init__(self) -> None:
+    def __init__(self: "Produksjonstilskudd") -> None:
         """Initializes an instance of the Produksjonstilskudd class.
 
         This constructor method dynamically sets up class attributes based on predefined code groups and combinations. It organizes various agricultural product codes, including fruits, vegetables, and livestock, into easily accessible class attributes for further processing or querying.
@@ -283,7 +283,7 @@ class Produksjonstilskudd:
         """
         self._setup_dynamic_attributes()
 
-    def _setup_dynamic_attributes(self) -> None:
+    def _setup_dynamic_attributes(self: "Produksjonstilskudd") -> None:
         # Set attributes for each code group
         for group_name, codes in self.code_groups.items():
             setattr(self, group_name, self._extract_from_codelist(codes))
@@ -297,7 +297,9 @@ class Produksjonstilskudd:
         for table_name, codes in self.table_groups.items():
             setattr(self, table_name, self._extract_from_codelist(codes))
 
-    def _extract_from_codelist(self, numbers: list[str]) -> dict[str, str]:
+    def _extract_from_codelist(
+        self: "Produksjonstilskudd", numbers: list[str]
+    ) -> dict[str, str]:
         result = {}
         for code in numbers:
             if code not in self.codes:
@@ -306,7 +308,9 @@ class Produksjonstilskudd:
         return result
 
     def get_codes(
-        self, attributes: str | list[str] | None = None, prefix: bool | None = False
+        self: "Produksjonstilskudd",
+        attributes: str | list[str] | None = None,
+        prefix: bool | None = False,
     ) -> list[str]:
         """Returns a list of 3-digit codes from the specified attributes.
 
