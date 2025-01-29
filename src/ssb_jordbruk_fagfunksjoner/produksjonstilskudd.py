@@ -5,7 +5,7 @@ import re
 
 _PRODUKSJONSKODER_REGISTRY: list["Produksjonskode"] = []
 
-VALID_MEASUREMENT_UNITS = {"antall", "dekar"}
+VALID_MEASUREMENT_UNITS = {"antall", "dekar", "stykk", "kilo"}
 
 
 class Produksjonstilskudd:
@@ -42,17 +42,50 @@ class Produksjonstilskudd:
 
 
 class Produksjonskode:
+    """Represents a production code used in agricultural classification.
+
+    When initialized it adds itself to the _PRODUKSJONSKODER_REGISTRY to be used in a codelist.
+
+    Attributes:
+        code (str): A 3-digit production code (e.g., "101").
+        label (str): The human-readable name of the production code.
+        groups (list[str]): A list of categories this production code belongs to.
+        measured_in (str): The unit of measurement (e.g., "Antall", "Dekar").
+        description (str, optional): A textual description of the production code. Defaults to None.
+        valid_from (str, optional): The year from which the code is valid. Defaults to None.
+        valid_to (str, optional): The year until which the code is valid. Defaults to None.
+        replaces (list[str], optional): A list of production codes that this code replaces. Defaults to an empty list.
+        replaced_by (list[str], optional): A list of production codes that replace this code. Defaults to an empty list.
+
+    Raises:
+        ValueError: If `code` is not exactly 3 digits.
+        TypeError: If `groups` is not a list.
+        ValueError: If any value in `groups` is not a string.
+        ValueError: If `measured_in` is not in the set of valid measurement units.
+
+    Example:
+        >>> kode = Produksjonskode(
+        ...     code="101",
+        ...     label="Melkeku",
+        ...     groups=["Storfe"],
+        ...     measured_in="Antall",
+        ...     description="Melkekyr for produksjon"
+        ... )
+        >>> print(kode.code)
+        101
+    """
+
     def __init__(
         self,
-        code,
-        label,
-        groups,
-        measured_in,
-        description=None,
-        valid_from=None,
-        valid_to=None,
-        replaces=None,
-        replaced_by=None,
+        code: str,
+        label: str,
+        groups: list[str],
+        measured_in: str,
+        description: str | None = None,
+        valid_from: str | None = None,
+        valid_to: str | None = None,
+        replaces: list[str] | None = None,
+        replaced_by: list[str] | None = None,
     ):
         if not re.fullmatch(r"\d{3}", code):  # Checks that the code is 3 digits.
             raise ValueError(
@@ -118,7 +151,7 @@ Produksjonskode(
     label="",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 When created they add themselves to the registry, making maintenance simpler.
@@ -129,7 +162,7 @@ Produksjonskode(
     label="Epler",
     description="Avling av epler",
     groups=["Frukt", "Frukt avling"],
-    measured_in="antall",
+    measured_in="kilo",
 )
 
 
@@ -146,7 +179,7 @@ Produksjonskode(
     label="Pærer",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -154,7 +187,7 @@ Produksjonskode(
     label="Pærer",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -162,7 +195,7 @@ Produksjonskode(
     label="Epler og pærer til press",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -170,7 +203,7 @@ Produksjonskode(
     label="Plommer",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -178,7 +211,7 @@ Produksjonskode(
     label="Plommer",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -186,7 +219,7 @@ Produksjonskode(
     label="Moreller",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -194,7 +227,7 @@ Produksjonskode(
     label="Kirsebær",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -202,7 +235,7 @@ Produksjonskode(
     label="Jordbær",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -210,7 +243,7 @@ Produksjonskode(
     label="Bringebær",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -218,7 +251,7 @@ Produksjonskode(
     label="Solbær",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -226,7 +259,7 @@ Produksjonskode(
     label="Rips",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -234,7 +267,7 @@ Produksjonskode(
     label="Hageblåbær",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -242,7 +275,7 @@ Produksjonskode(
     label="Stikkelsbær",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -250,7 +283,7 @@ Produksjonskode(
     label="Industribær",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -258,7 +291,7 @@ Produksjonskode(
     label="Tomat",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -266,7 +299,7 @@ Produksjonskode(
     label="Slangeagurk",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -274,7 +307,7 @@ Produksjonskode(
     label="Salat (også friland)",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="stykk",
 )
 
 Produksjonskode(
@@ -282,7 +315,7 @@ Produksjonskode(
     label="Matpoteter i Nord-Norge",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -290,7 +323,7 @@ Produksjonskode(
     label="Hester, under 3 år",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -298,7 +331,7 @@ Produksjonskode(
     label="Hester, 3 år og eldre",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -306,7 +339,7 @@ Produksjonskode(
     label="Ammekyr av minst 50% kjøttferase",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -314,7 +347,7 @@ Produksjonskode(
     label="Øvrige storfe",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -322,7 +355,7 @@ Produksjonskode(
     label="Melkekyr",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -330,7 +363,7 @@ Produksjonskode(
     label="Ammekyr",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 
@@ -339,7 +372,7 @@ Produksjonskode(
     label="Melkesau",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -347,7 +380,7 @@ Produksjonskode(
     label="Melkegeiter",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -355,7 +388,7 @@ Produksjonskode(
     label="Ammegeiter",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -363,7 +396,7 @@ Produksjonskode(
     label="Bukker og ungdyr, medregnet kje",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -371,7 +404,7 @@ Produksjonskode(
     label="Søyer født i fjor eller tidligere",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -379,7 +412,7 @@ Produksjonskode(
     label="Værer født i fjor eller tidligere",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -387,7 +420,7 @@ Produksjonskode(
     label="Smågriser, levendevekt under 20kg eller alder inntil 8 uker",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -395,7 +428,7 @@ Produksjonskode(
     label="Avlspurker som har fått minst 1 kull",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -403,7 +436,7 @@ Produksjonskode(
     label="Råner som er satt inn i avl",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -411,7 +444,7 @@ Produksjonskode(
     label="Slaktegriser, levendevekt minst 20kg",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -419,7 +452,7 @@ Produksjonskode(
     label="Ungpurker bestemt for avl",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -427,7 +460,7 @@ Produksjonskode(
     label="Ungråner bestemt for avl",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -435,7 +468,7 @@ Produksjonskode(
     label="Verpehøner",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -443,7 +476,7 @@ Produksjonskode(
     label="Rugeegg levert til rugeri",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -451,7 +484,7 @@ Produksjonskode(
     label="Avlsdyr av ender, kalkuner og gjess",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -459,7 +492,7 @@ Produksjonskode(
     label="Minktisper",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -467,7 +500,7 @@ Produksjonskode(
     label="Revetisper",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -475,7 +508,7 @@ Produksjonskode(
     label="Ender, kalkuner og gjess for slakt",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -483,7 +516,7 @@ Produksjonskode(
     label="Livkyllinger",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -491,7 +524,7 @@ Produksjonskode(
     label="Slaktekyllinger",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -499,7 +532,7 @@ Produksjonskode(
     label="Hjort, 1 år og eldre",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -507,7 +540,7 @@ Produksjonskode(
     label="Hjort, under 1 år",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -515,7 +548,7 @@ Produksjonskode(
     label="Kaniner",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -523,7 +556,7 @@ Produksjonskode(
     label="Griser solgt som livdyr, vekt på minst 50 kg",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -531,7 +564,7 @@ Produksjonskode(
     label="Struts",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -539,7 +572,7 @@ Produksjonskode(
     label="Kyllinger og kalkuner solgt som livdyr",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -547,7 +580,7 @@ Produksjonskode(
     label="Esel",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -555,7 +588,7 @@ Produksjonskode(
     label="Hester i pensjon i beitesesongen",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -563,7 +596,7 @@ Produksjonskode(
     label="Bifolk",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -571,7 +604,7 @@ Produksjonskode(
     label="Lama",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -579,7 +612,7 @@ Produksjonskode(
     label="Alpakka",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -587,7 +620,7 @@ Produksjonskode(
     label="Fylldyrket eng",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -595,7 +628,7 @@ Produksjonskode(
     label="Overflatedyrket eng",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -603,7 +636,7 @@ Produksjonskode(
     label="Innmarksbeite",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -611,7 +644,7 @@ Produksjonskode(
     label="Andre grovforvekster til for",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -619,7 +652,7 @@ Produksjonskode(
     label="Grønngjødsling",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -627,7 +660,7 @@ Produksjonskode(
     label="Poteter",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -635,7 +668,7 @@ Produksjonskode(
     label="Annet korn og frø som er berettiget tilskudd",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -643,7 +676,7 @@ Produksjonskode(
     label="Engfør og annen såfrøproduksjon",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -651,7 +684,7 @@ Produksjonskode(
     label="Erter, bønner og andre belgvekster til modning",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -659,7 +692,7 @@ Produksjonskode(
     label="Oljevekster",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -667,7 +700,7 @@ Produksjonskode(
     label="Rug og rughvete",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -675,7 +708,7 @@ Produksjonskode(
     label="Korn til krossing",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -683,7 +716,7 @@ Produksjonskode(
     label="Vårhvete",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -691,7 +724,7 @@ Produksjonskode(
     label="Bygg",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -699,7 +732,7 @@ Produksjonskode(
     label="Havre",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -707,7 +740,7 @@ Produksjonskode(
     label="Erter og bønner til konserveindustri (høstet før modning)",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -715,7 +748,7 @@ Produksjonskode(
     label="Høsthvete",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -723,7 +756,7 @@ Produksjonskode(
     label="Grønnsaker på friland, inkl. matkålrot og urter",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -731,7 +764,7 @@ Produksjonskode(
     label="Moreller og kirsebær",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -739,7 +772,7 @@ Produksjonskode(
     label="Jordbær",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -747,7 +780,7 @@ Produksjonskode(
     label="Andre bærarter",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -755,7 +788,7 @@ Produksjonskode(
     label="Andre fruktarter",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -763,7 +796,7 @@ Produksjonskode(
     label="Planteskoleareal og blomsterdyrking på friland",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -771,7 +804,7 @@ Produksjonskode(
     label="Brakka areal",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -779,7 +812,7 @@ Produksjonskode(
     label="Fulldyrket og/eller overflatedyrket, ute av drift",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -787,7 +820,7 @@ Produksjonskode(
     label="Innmarksbeite, ute av drift",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -795,7 +828,7 @@ Produksjonskode(
     label="Areal i drift, men ikke berettiget produksjonstilskudd",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
@@ -803,7 +836,7 @@ Produksjonskode(
     label="Storfe på utmarksbeite - Melkekyr og ammekyr",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -811,7 +844,7 @@ Produksjonskode(
     label="Storfe på beite - Melkekyr og ammekyr",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -819,7 +852,7 @@ Produksjonskode(
     label="Storfe på utmarksbeite - Øvrige storfe",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -827,7 +860,7 @@ Produksjonskode(
     label="Storfe på beite - Øvrige storfe",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -835,7 +868,7 @@ Produksjonskode(
     label="Sauer, født i fjor eller tidligere, utmarksbeite",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -843,7 +876,7 @@ Produksjonskode(
     label="Lam, født i år, utmarksbeite",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -851,15 +884,15 @@ Produksjonskode(
     label="Geiter, voksne og kje, utmarksbeite",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
-    code="Geiter, voksne og kje, beitetilskudd",
-    label="",
+    code="445",
+    label="Geiter, voksne og kje, beitetilskudd",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -867,7 +900,7 @@ Produksjonskode(
     label="Hester på utmarksbeite",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -875,7 +908,7 @@ Produksjonskode(
     label="Hester på beite",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -883,7 +916,7 @@ Produksjonskode(
     label="Lama på beite",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -891,7 +924,7 @@ Produksjonskode(
     label="Alpakka på beite",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -899,7 +932,7 @@ Produksjonskode(
     label="Hjort på beite",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -907,7 +940,7 @@ Produksjonskode(
     label="Sauer, født i fjor eller tidligere, beitetilskudd",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -915,7 +948,7 @@ Produksjonskode(
     label="Lam, født i år, beitetilskudd",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -923,7 +956,7 @@ Produksjonskode(
     label="Salg av høy",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -931,7 +964,7 @@ Produksjonskode(
     label="Salg av surfor",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -939,7 +972,7 @@ Produksjonskode(
     label="Salg av høyensilasje",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="kilo",
 )
 
 Produksjonskode(
@@ -947,7 +980,7 @@ Produksjonskode(
     label="Storfe på utmarksbeite - Kyr av bevaringsverdig rase",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -955,7 +988,7 @@ Produksjonskode(
     label="Storfe på utmarksbeite - Okser av bevaringsverdig rase",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -963,7 +996,7 @@ Produksjonskode(
     label="Søyer av bevaringsverdig rase",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -971,7 +1004,7 @@ Produksjonskode(
     label="Værer av bevaringsverdig rase",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -979,7 +1012,7 @@ Produksjonskode(
     label="Ammegeiter av bevaringsverdig rase",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -987,79 +1020,79 @@ Produksjonskode(
     label="Unghester under 3 år av bevaringsverdig rase",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="antall",
 )
 
 Produksjonskode(
     code="801",
     label="Økologiske melkekyr",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="antall",
 )
 
 Produksjonskode(
     code="802",
     label="Økologiske ammekyr",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="antall",
 )
 
 Produksjonskode(
     code="803",
     label="Økologiske øvrige storfe",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="antall",
 )
 
 Produksjonskode(
     code="810",
     label="Økologiske melkegeiter",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="antall",
 )
 
 Produksjonskode(
     code="811",
     label="Økologiske ammegeiter",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="antall",
 )
 
 Produksjonskode(
     code="821",
     label="Økologiske sauer",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="antall",
 )
 
 Produksjonskode(
     code="830",
     label="Økologiske avlsgriser",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="antall",
 )
 
 Produksjonskode(
     code="833",
     label="Økologiske griser solgt som livdyr",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="antall",
 )
 
 Produksjonskode(
     code="841",
     label="Økologiske verpehøner",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="antall",
 )
 
 Produksjonskode(
@@ -1067,95 +1100,95 @@ Produksjonskode(
     label="Grønngjødsling, 2. års karens",
     description="",
     groups=[""],
-    measured_in="",
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="855",
     label="Korn til modning og krossing, økologisk samt 2.års karens",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk", "karens"],
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="861",
     label="Poteter, økologisk areal samt 2.års karens",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk", "karens"],
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="863",
     label="Frukt og bær, økologisk areal samt 2. og 3. års karens",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk", "karens"],
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="864",
     label="Grønnsaker, økologisk areal samt 2. års karens",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk", "karens"],
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="870",
     label="Annet areal (grovfôr), økologisk areal samt 2. års karens",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk", "karens"],
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="871",
     label="Innmarksbeite, økologisk areal",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="875",
     label="Grønngjødsling, økologisk areal",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["økologisk"],
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="876",
     label="Areal brakka for å bekjempe ugras, økologisk eller 2. års karens",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["karens", "økologisk"],
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="880",
     label="Innmarksbeite i 1 års karens",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["karens"],
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="881",
     label="Grovforareal i 1 års karens",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["karens"],
+    measured_in="dekar",
 )
 
 Produksjonskode(
     code="882",
     label="Annet areal (enn grovfor) i 1 års karens",
     description="",
-    groups=[""],
-    measured_in="",
+    groups=["karens"],
+    measured_in="dekar",
 )
 
 
