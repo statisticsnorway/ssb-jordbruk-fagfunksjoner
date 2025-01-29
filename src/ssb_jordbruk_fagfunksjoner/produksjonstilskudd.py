@@ -161,7 +161,7 @@ Produksjonskode(
     code="001",
     label="Epler",
     description="Avling av epler",
-    groups=["Frukt", "Frukt avling"],
+    groups=["frukt", "frukt avling"],
     measured_in="kilo",
 )
 
@@ -170,7 +170,7 @@ Produksjonskode(
     code="272",
     label="Epler",
     description="Areal med epler",
-    groups=["Frukt", "Frukt areal"],
+    groups=["frukt", "frukt areal"],
     measured_in="dekar",
 )
 
@@ -1200,6 +1200,8 @@ print("get_codes testing")
 print(1)
 print(Produksjonstilskudd().get_codes())
 print(2)
-print(Produksjonstilskudd().get_codes("Frukt"))
+print(Produksjonstilskudd().get_codes("frukt"))
 print(3)
-print(Produksjonstilskudd().get_codes("Frukt avling"))
+print(Produksjonstilskudd().get_codes("frukt avling"))
+print(4)
+print(Produksjonstilskudd().get_codes("økologisk"))
