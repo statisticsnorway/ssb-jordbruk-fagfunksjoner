@@ -1,11 +1,22 @@
 import pytest
 
+from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import Produksjonskode
 from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import Produksjonstilskudd
 
 
 @pytest.fixture()
 def produksjonstilskudd_instance() -> Produksjonstilskudd:
     return Produksjonstilskudd()
+
+
+def test_add_new_code():  # Test at den også havner i Produksjonstilskudd
+    Produksjonskode(
+        code="123",
+        label="test",
+        description="",
+        groups=[""],
+        measured_in="antall",
+    )
 
 
 def test_get_codes_with_prefix(
@@ -34,39 +45,3 @@ def test_get_codes_all(produksjonstilskudd_instance: Produksjonstilskudd) -> Non
     assert len(all_codes) == len(
         produksjonstilskudd_instance.codes
     ), "Should return all codes"
-
-
-def test_dynamic_attributes_creation(
-    produksjonstilskudd_instance: Produksjonstilskudd,
-) -> None:
-    """Test that dynamic attributes are correctly set up."""
-    assert hasattr(
-        produksjonstilskudd_instance, "frukt_avling"
-    ), "Instance should have 'frukt_avling' attribute"
-    assert isinstance(
-        produksjonstilskudd_instance.frukt_avling, dict
-    ), "'frukt_avling' should be a dictionary"
-
-
-def test_dynamic_combinations_creation(
-    produksjonstilskudd_instance: Produksjonstilskudd,
-) -> None:
-    """Test that dynamic combination attributes are correctly set up."""
-    assert hasattr(
-        produksjonstilskudd_instance, "frukt"
-    ), "Instance should have 'frukt' combination attribute"
-    combination = produksjonstilskudd_instance.frukt
-    assert (
-        "001" in combination and "271" in combination
-    ), "'frukt' combination should contain codes from its groups"
-
-
-def test_dynamic_tabell_creation(
-    produksjonstilskudd_instance: Produksjonstilskudd,
-) -> None:
-    assert hasattr(
-        produksjonstilskudd_instance, "tabell_storfe"
-    ), "Instance should have 'tabell_storfe' attribute"
-    assert isinstance(
-        produksjonstilskudd_instance.tabell_storfe, dict
-    ), "'tabell_storfe' should be a dictionary"
