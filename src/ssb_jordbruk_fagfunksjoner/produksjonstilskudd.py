@@ -20,7 +20,17 @@ class Produksjonstilskudd:
                 categories.add(group)
         self.categories = list(sorted(categories))
 
-    def get_codes(self, categories=None):
+    @staticmethod
+    def _add_prefix(list_containing_codes: list[str]) -> list[str]:
+        """Function to add 'pk_' to codes when returning a list of codes."""
+        return [f"pk_{x}" for x in list_containing_codes]
+
+    def get_codes(self, categories=None, prefix: bool | None = None) -> list[str]:
+        # Input validation
+        if prefix is None:
+            prefix = False
+        if not isinstance(prefix, bool):
+            raise TypeError(f"prefix should be either True or False, received {prefix}")
         if categories is None:
             categories = self.categories
         if isinstance(categories, str):
@@ -30,12 +40,44 @@ class Produksjonstilskudd:
                 f"Received object of type {type(categories)}, expected type str or list."
             )
 
+        # Get the requested codes
         relevant_codes = []
+
         for code in self.codes:
             if any(group in categories for group in code.groups):
                 relevant_codes.append(code)
 
-        return [x.code for x in relevant_codes]
+        list_of_codes = [x.code for x in relevant_codes]
+
+        if prefix:
+            list_of_codes = self._add_prefix(list_of_codes)
+
+        return list_of_codes
+
+    def get_codes_by_measurement(
+        self, measurement, prefix: bool | None = None
+    ) -> list[str]:
+        if measurement not in VALID_MEASUREMENT_UNITS:
+            raise ValueError(
+                f"Invalid measurement unit: {measurement}. Must be one of {VALID_MEASUREMENT_UNITS}"
+            )
+        if prefix is None:
+            prefix = False
+        if not isinstance(prefix, bool):
+            raise TypeError(f"prefix should be either True or False, received {prefix}")
+
+        relevant_codes = []
+
+        for code in self.codes:
+            if code.measured_in == measurement:
+                relevant_codes.append(code)
+
+        list_of_codes = [x.code for x in relevant_codes]
+
+        if prefix:
+            list_of_codes = self._add_prefix(list_of_codes)
+
+        return list_of_codes
 
     def __str__(self):
         return f"Produksjonstilskudd object with {len(self.codes)} Produksjonskoder registered.\nCodes are organized in a total of {len(self.categories)} categories."
@@ -1204,4 +1246,6 @@ print(Produksjonstilskudd().get_codes("frukt"))
 print(3)
 print(Produksjonstilskudd().get_codes("frukt avling"))
 print(4)
-print(Produksjonstilskudd().get_codes("økologisk"))
+print(Produksjonstilskudd().get_codes("økologisk", prefix=True))
+print(5)
+print(Produksjonstilskudd().get_codes_by_measurement("antall", prefix=True))
