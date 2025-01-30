@@ -1,43 +1,40 @@
 import pytest
 
-from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import Produksjonskode, VALID_MEASUREMENT_UNITS
+from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import VALID_MEASUREMENT_UNITS
+from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import Produksjonskode
 from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import Produksjonstilskudd
 
 
 @pytest.fixture(autouse=True)
 def clear_produksjonskode_registry():
-    """
-    Automatically clear the Produksjonskode registry before each test.
+    """Automatically clear the Produksjonskode registry before each test.
 
-    This ensures that each test starts with an empty codelist 
+    This ensures that each test starts with an empty codelist
     (so Produksjonstilskudd sees no codes unless the test creates some).
     """
     Produksjonskode._registry.clear()
     yield
     Produksjonskode._registry.clear()
 
+
 def test_empty_registry_at_start():
-    """
-    Because of the autouse fixture, 
+    """Because of the autouse fixture,
     we expect the registry to be empty at the start of this test.
     """
     assert len(Produksjonskode._registry) == 0
 
-    # We create a Produksjonstilskudd instance. 
+    # We create a Produksjonstilskudd instance.
     # It should see 0 codes because none have been created.
     pt = Produksjonstilskudd()
     assert len(pt.codes) == 0
 
+
 def test_add_one_code():
-    """
-    This test also starts with an empty registry. 
+    """This test also starts with an empty registry.
     We'll add one code and confirm it's registered.
     """
     code = Produksjonskode(
-        code="001", 
-        label="Epler", 
-        groups=["frukt"], 
-        measured_in="kilo"
+        code="001", label="Epler", groups=["frukt"], measured_in="kilo"
     )
     assert len(Produksjonskode._registry) == 1
     assert code in Produksjonskode._registry
@@ -46,15 +43,16 @@ def test_add_one_code():
     assert len(pt.codes) == 1
     assert pt.codes[0].code == "001"
 
+
 def test_no_codes_again():
-    """
-    This test shows that after the previous test, 
-    the registry is automatically cleared by the fixture 
+    """This test shows that after the previous test,
+    the registry is automatically cleared by the fixture
     (so we have 0 codes here).
     """
     assert len(Produksjonskode._registry) == 0
     pt = Produksjonstilskudd()
     assert len(pt.codes) == 0
+
 
 def test_produksjonskode_init_valid():
     """Check that a valid Produksjonskode initializes and registers correctly."""
@@ -140,7 +138,9 @@ def test_produksjonstilskudd_init():
     # Create a few codes
     Produksjonskode(code="001", label="Epler", groups=["frukt"], measured_in="kilo")
     Produksjonskode(code="002", label="Pærer", groups=["frukt"], measured_in="kilo")
-    Produksjonskode(code="101", label="Melkeku", groups=["storfe"], measured_in="antall")
+    Produksjonskode(
+        code="101", label="Melkeku", groups=["storfe"], measured_in="antall"
+    )
 
     pt = Produksjonstilskudd()
     assert len(pt.codes) == 3
@@ -152,7 +152,9 @@ def test_produksjonstilskudd_get_codes():
     # Create codes in two different categories
     Produksjonskode(code="001", label="Epler", groups=["frukt"], measured_in="kilo")
     Produksjonskode(code="002", label="Pærer", groups=["frukt"], measured_in="kilo")
-    Produksjonskode(code="101", label="Melkeku", groups=["storfe"], measured_in="antall")
+    Produksjonskode(
+        code="101", label="Melkeku", groups=["storfe"], measured_in="antall"
+    )
 
     pt = Produksjonstilskudd()
 
@@ -192,7 +194,9 @@ def test_produksjonstilskudd_get_codes_by_measurement():
     # Create codes with different measurement units
     Produksjonskode(code="001", label="Epler", groups=["frukt"], measured_in="kilo")
     Produksjonskode(code="002", label="Pærer", groups=["frukt"], measured_in="kilo")
-    Produksjonskode(code="101", label="Melkeku", groups=["storfe"], measured_in="antall")
+    Produksjonskode(
+        code="101", label="Melkeku", groups=["storfe"], measured_in="antall"
+    )
 
     pt = Produksjonstilskudd()
 

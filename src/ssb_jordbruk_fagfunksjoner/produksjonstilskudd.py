@@ -3,7 +3,6 @@
 
 import re
 
-
 VALID_MEASUREMENT_UNITS = {"antall", "dekar", "stykk", "kilo"}
 
 
