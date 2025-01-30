@@ -1,9 +1,8 @@
-"""Uses a registry pattern to build the Produksjonstilskudd codelist based on all currently created Produksjonskode objects, as they add themselves to the _PRODUKSJONSKODER_REGISTRY list as they are created.
+"""Uses a registry pattern to build the Produksjonstilskudd codelist based on all currently created Produksjonskode objects, as they add themselves to the _registry list as they are created.
 """
 
 import re
 
-_PRODUKSJONSKODER_REGISTRY: list["Produksjonskode"] = []
 
 VALID_MEASUREMENT_UNITS = {"antall", "dekar", "stykk", "kilo"}
 
@@ -12,7 +11,7 @@ class Produksjonstilskudd:
     """Should be possible to retrieve codes by measurement."""
 
     def __init__(self) -> None:
-        self.codes = _PRODUKSJONSKODER_REGISTRY
+        self.codes = Produksjonskode._registry
 
         categories = set()
         for code in self.codes:
@@ -86,7 +85,7 @@ class Produksjonstilskudd:
 class Produksjonskode:
     """Represents a production code used in agricultural classification.
 
-    When initialized it adds itself to the _PRODUKSJONSKODER_REGISTRY to be used in a codelist.
+    When initialized it adds itself to the _registry to be used in a codelist.
 
     Attributes:
         code (str): A 3-digit production code (e.g., "101").
@@ -116,6 +115,8 @@ class Produksjonskode:
         >>> print(kode.code)
         101
     """
+
+    _registry: list["Produksjonskode"] = []
 
     def __init__(
         self,
@@ -158,7 +159,7 @@ class Produksjonskode:
         self.groups = groups if groups else []
         self.measured_in = measured_in
 
-        _PRODUKSJONSKODER_REGISTRY.append(self)  # Registers itself in the registry
+        Produksjonskode._registry.append(self)  # Registers itself in the registry
 
     def __str__(self):
         """Returns a human-readable string representation of the object."""
@@ -1232,20 +1233,3 @@ Produksjonskode(
     groups=["karens"],
     measured_in="dekar",
 )
-
-
-print(Produksjonstilskudd())
-
-print(Produksjonstilskudd().categories)
-
-print("get_codes testing")
-print(1)
-print(Produksjonstilskudd().get_codes())
-print(2)
-print(Produksjonstilskudd().get_codes("frukt"))
-print(3)
-print(Produksjonstilskudd().get_codes("frukt avling"))
-print(4)
-print(Produksjonstilskudd().get_codes("økologisk", prefix=True))
-print(5)
-print(Produksjonstilskudd().get_codes_by_measurement("antall", prefix=True))
