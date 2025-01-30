@@ -108,7 +108,7 @@ class Produksjonskode:
         ...     code="101",
         ...     label="Melkeku",
         ...     groups=["Storfe"],
-        ...     measured_in="Antall",
+        ...     measured_in="antall",
         ...     description="Melkekyr for produksjon"
         ... )
         >>> print(kode.code)
