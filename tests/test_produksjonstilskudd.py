@@ -124,21 +124,22 @@ def test_produksjonskode_groups_validation() -> None:
     Attempts to create Produksjonskode instances with incorrect group
     data types and expects errors.
     """
-    with pytest.raises(TypeError, match="groups must be a list"):
-        Produksjonskode(
-            code="123",
-            label="InvalidGroups",
-            groups="notalist",  # type: ignore[arg-type]
-            measured_in="kilo",
-        )
+    with suppress_type_checks():
+        with pytest.raises(TypeError, match="groups must be a list"):
+            Produksjonskode(
+                code="123",
+                label="InvalidGroups",
+                groups="notalist",  # type: ignore[arg-type]
+                measured_in="kilo",
+            )
 
-    with pytest.raises(ValueError, match="All values in groups must be strings"):
-        Produksjonskode(
-            code="123",
-            label="InvalidGroups2",
-            groups=[1, 2],  # type: ignore[list-item]
-            measured_in="kilo",
-        )
+        with pytest.raises(ValueError, match="All values in groups must be strings"):
+            Produksjonskode(
+                code="123",
+                label="InvalidGroups2",
+                groups=[1, 2],  # type: ignore[list-item]
+                measured_in="kilo",
+            )
 
     assert len(Produksjonskode._registry) == 0
 
