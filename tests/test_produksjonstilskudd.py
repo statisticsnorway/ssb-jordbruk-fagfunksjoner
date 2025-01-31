@@ -226,11 +226,11 @@ def test_produksjonstilskudd_get_codes_type_errors() -> None:
 
     # prefix should be bool
     with pytest.raises(TypeError, match="prefix should be either True or False"):
-        pt.get_codes(prefix="yes")  # type: ignore[arg-type]
+        pt.get_codes(prefix="yes")  # type: ignore[arg-type] # Intentionally invalid
 
     # categories should be str or list
     with pytest.raises(TypeError, match="expected type str or list"):
-        pt.get_codes(categories=123)  # type: ignore[arg-type]
+        pt.get_codes(categories=123)  # type: ignore[arg-type] # Intentionally invalid
 
 
 def test_produksjonstilskudd_get_codes_by_measurement() -> None:
