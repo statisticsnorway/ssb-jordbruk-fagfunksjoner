@@ -1,15 +1,29 @@
-"""Uses a registry pattern to build the Produksjonstilskudd codelist based on all currently created Produksjonskode objects, as they add themselves to the _registry list as they are created.
+"""Utilities to help maintain and use the Produksjonstilskudd codelist.
+
+Uses a registry pattern to build the Produksjonstilskudd codelist based on all currently created Produksjonskode objects, as they add themselves to the _registry list as they are created.
 """
 
 import re
+from typing import ClassVar
 
 VALID_MEASUREMENT_UNITS = {"antall", "dekar", "stykk", "kilo"}
 
 
 class Produksjonstilskudd:
-    """Should be possible to retrieve codes by measurement."""
+    """A service class for retrieving production codes by various criteria.
 
-    def __init__(self) -> None:
+    This class provides methods for filtering and retrieving registered
+    production codes (Produksjonskode objects) based on categories or
+    measurement units.
+    """
+
+    def __init__(self: "Produksjonstilskudd") -> None:
+        """Initializes the codelist from the Produksjonskode registry.
+
+        This sets the `self.codes` attribute to all currently registered
+        `Produksjonskode` instances. It also compiles a sorted list of unique
+        categories into `self.categories`.
+        """
         self.codes = Produksjonskode._registry
 
         categories = set()
@@ -20,10 +34,40 @@ class Produksjonstilskudd:
 
     @staticmethod
     def _add_prefix(list_containing_codes: list[str]) -> list[str]:
-        """Function to add 'pk_' to codes when returning a list of codes."""
+        """Adds a 'pk_' prefix to each code in the provided list.
+
+        Args:
+            list_containing_codes (List[str]): A list of production code strings.
+
+        Returns:
+            List[str]: A new list of code strings prefixed with 'pk_'.
+        """
         return [f"pk_{x}" for x in list_containing_codes]
 
-    def get_codes(self, categories=None, prefix: bool | None = None) -> list[str]:
+    def get_codes(
+        self: "Produksjonstilskudd",
+        categories: str | list[str] | None = None,
+        prefix: bool | None = None,
+    ) -> list[str]:
+        """Retrieves production codes filtered by the specified categories.
+
+        - If `categories` is None, the method returns codes from all categories.
+        - If `categories` is a string, it is converted into a single-element list.
+        - If `prefix` is True, each returned code is prefixed with 'pk_'.
+
+        Args:
+            categories (Union[str, List[str], None], optional): Categories to filter by.
+                Can be a single category (str), a list of categories, or None.
+                Defaults to None, meaning use all categories.
+            prefix (bool | None, optional): Whether to prefix each code with 'pk_'.
+                Defaults to None, which is treated as False.
+
+        Raises:
+            TypeError: If `prefix` is not a bool or `categories` is not a str, list, or None.
+
+        Returns:
+            List[str]: A list of matching production codes (optionally prefixed).
+        """
         # Input validation
         if prefix is None:
             prefix = False
@@ -53,8 +97,25 @@ class Produksjonstilskudd:
         return list_of_codes
 
     def get_codes_by_measurement(
-        self, measurement, prefix: bool | None = None
+        self: "Produksjonstilskudd", measurement: str, prefix: bool | None = None
     ) -> list[str]:
+        """Retrieves production codes that match a specific measurement unit.
+
+        - If `prefix` is True, each returned code is prefixed with 'pk_'.
+
+        Args:
+            measurement (str): The measurement unit to filter by (e.g., 'antall').
+            prefix (bool | None, optional): Whether to prefix each code with 'pk_'.
+                Defaults to None, which is treated as False.
+
+        Raises:
+            ValueError: If the `measurement` is not one of the valid measurement units.
+            TypeError: If `prefix` is not a bool.
+
+        Returns:
+            List[str]: A list of production codes (optionally prefixed) that match
+            the given measurement unit.
+        """
         if measurement not in VALID_MEASUREMENT_UNITS:
             raise ValueError(
                 f"Invalid measurement unit: {measurement}. Must be one of {VALID_MEASUREMENT_UNITS}"
@@ -77,25 +138,31 @@ class Produksjonstilskudd:
 
         return list_of_codes
 
-    def __str__(self):
+    def __str__(self: "Produksjonstilskudd") -> str:
+        """Provides a string representation of the Produksjonstilskudd object.
+
+        Returns:
+            str: A summary of the number of codes and categories registered.
+        """
         return f"Produksjonstilskudd object with {len(self.codes)} Produksjonskoder registered.\nCodes are organized in a total of {len(self.categories)} categories."
 
 
 class Produksjonskode:
     """Represents a production code used in agricultural classification.
 
-    When initialized it adds itself to the _registry to be used in a codelist.
+    When initialized, each instance is automatically registered in the class-level
+    registry `_registry` for use by `Produksjonstilskudd`.
 
     Attributes:
         code (str): A 3-digit production code (e.g., "101").
         label (str): The human-readable name of the production code.
-        groups (list[str]): A list of categories this production code belongs to.
-        measured_in (str): The unit of measurement (e.g., "Antall", "Dekar").
-        description (str, optional): A textual description of the production code. Defaults to None.
-        valid_from (str, optional): The year from which the code is valid. Defaults to None.
-        valid_to (str, optional): The year until which the code is valid. Defaults to None.
-        replaces (list[str], optional): A list of production codes that this code replaces. Defaults to an empty list.
-        replaced_by (list[str], optional): A list of production codes that replace this code. Defaults to an empty list.
+        groups (List[str]): A list of categories this production code belongs to.
+        measured_in (str): The unit of measurement (e.g., "antall", "dekar").
+        description (Optional[str]): A textual description of the production code.
+        valid_from (Optional[str]): The year from which the code is valid.
+        valid_to (Optional[str]): The year until which the code is valid.
+        replaces (List[str]): A list of production codes that this code replaces.
+        replaced_by (List[str]): A list of production codes that replace this code.
 
     Raises:
         ValueError: If `code` is not exactly 3 digits.
@@ -115,10 +182,10 @@ class Produksjonskode:
         101
     """
 
-    _registry: list["Produksjonskode"] = []
+    _registry: ClassVar[list["Produksjonskode"]] = []
 
     def __init__(
-        self,
+        self: "Produksjonskode",
         code: str,
         label: str,
         groups: list[str],
@@ -128,29 +195,25 @@ class Produksjonskode:
         valid_to: str | None = None,
         replaces: list[str] | None = None,
         replaced_by: list[str] | None = None,
-    ):
-        if not re.fullmatch(r"\d{3}", code):  # Checks that the code is 3 digits.
-            raise ValueError(
-                f"Invalid code: {code}. Must be exactly 3 digits (e.g., '101')."
-            )
+    ) -> None:
+        """Initializes a Produksjonskode instance and registers it.
 
-        if not isinstance(groups, list):
-            raise TypeError(f"Invalid type: {type(groups)}. groups must be a list")
+        Also performs a validation check using self.is_valid()
 
-        _invalid_values = [value for value in groups if not isinstance(value, str)]
-        if _invalid_values:
-            raise ValueError(
-                f"All values in groups must be strings. Invalid values: {_invalid_values}"
-            )
-
-        if measured_in not in VALID_MEASUREMENT_UNITS:
-            raise ValueError(
-                f"Invalid measurement unit: {measured_in}. Must be one of {VALID_MEASUREMENT_UNITS}"
-            )
-
+        Args:
+            code (str): A 3-digit code, e.g. "101".
+            label (str): A descriptive label, e.g. "Melkeku".
+            groups (List[str]): A list of categories (e.g. ["Storfe"]).
+            measured_in (str): The measurement unit, must be one of {"antall", "dekar", "stykk", "kilo"}.
+            description (str | None, optional): An optional textual description. Defaults to None.
+            valid_from (str | None, optional): The start year of validity. Defaults to None.
+            valid_to (str | None, optional): The end year of validity. Defaults to None.
+            replaces (List[str] | None, optional): List of codes this one replaces. Defaults to None.
+            replaced_by (List[str] | None, optional): List of codes that replace this one. Defaults to None.
+        """
         self.code = code
         self.label = label
-        self.description = description if description else None
+        self.description = description if description else ""
         self.valid_from = valid_from if valid_from else None
         self.valid_to = valid_to if valid_to else None
         self.replaces = replaces if replaces else []
@@ -158,10 +221,44 @@ class Produksjonskode:
         self.groups = groups if groups else []
         self.measured_in = measured_in
 
+        self.is_valid()
+
         Produksjonskode._registry.append(self)  # Registers itself in the registry
 
-    def __str__(self):
-        """Returns a human-readable string representation of the object."""
+    def is_valid(self: "Produksjonskode") -> None:
+        """Validates the Produksjonskode fields.
+
+        Raises:
+            ValueError: If `code` is not a 3-digit string.
+            TypeError: If `groups` is not a list.
+            ValueError: If any item in `groups` is not a string.
+            ValueError: If `measured_in` is invalid.
+        """
+        if not re.fullmatch(r"\d{3}", self.code):  # Checks that the code is 3 digits.
+            raise ValueError(
+                f"Invalid code: {self.code}. Must be exactly 3 digits (e.g., '101')."
+            )
+
+        if not isinstance(self.groups, list):
+            raise TypeError(f"Invalid type: {type(self.groups)}. groups must be a list")
+
+        _invalid_values = [value for value in self.groups if not isinstance(value, str)]
+        if _invalid_values:
+            raise ValueError(
+                f"All values in groups must be strings. Invalid values: {_invalid_values}"
+            )
+
+        if self.measured_in not in VALID_MEASUREMENT_UNITS:
+            raise ValueError(
+                f"Invalid measurement unit: {self.measured_in}. Must be one of {VALID_MEASUREMENT_UNITS}"
+            )
+
+    def __str__(self: "Produksjonskode") -> str:
+        """Returns a human-readable string representation of the object.
+
+        Returns:
+            str: Formatted string with code details.
+        """
         return (
             f"Produksjonskode:\n"
             f"  Code: {self.code}\n"
@@ -174,8 +271,12 @@ class Produksjonskode:
             f"  Measured In: {self.measured_in if self.measured_in else 'N/A'}"
         )
 
-    def __repr__(self):
-        """Returns a detailed string representation for debugging."""
+    def __repr__(self: "Produksjonskode") -> str:
+        """Returns a detailed string representation for debugging.
+
+        Returns:
+            str: Debug-oriented string with all relevant fields.
+        """
         return (
             f"Produksjonskode("
             f"code={self.code!r}, label={self.label!r}, "
