@@ -16,6 +16,7 @@ Changelog = "https://github.com/statisticsnorway/ssb-jordbruk-fagfunksjoner/rele
 [tool.poetry.dependencies]
 python = "^3.10"
 click = ">=8.0.1"
+typeguard = "^4.4.1"
 
 [tool.poetry.group.dev.dependencies]
 pygments = ">=2.10.0"

@@ -1,6 +1,7 @@
 from collections.abc import Generator
 
 import pytest
+from typeguard import typeguard_ignore
 
 from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import VALID_MEASUREMENT_UNITS
 from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import Produksjonskode
@@ -215,7 +216,7 @@ def test_produksjonstilskudd_get_codes() -> None:
     assert frukt_codes_prefixed == ["pk_001", "pk_002"]
 
 
-@pytest.mark.typeguard_skip
+@typeguard_ignore
 def test_produksjonstilskudd_get_codes_type_errors() -> None:
     """Tests type validations for 'prefix' and 'categories' in get_codes().
 
