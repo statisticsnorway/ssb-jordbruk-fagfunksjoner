@@ -47,7 +47,7 @@ class Produksjonstilskudd:
     def get_codes(
         self: "Produksjonstilskudd",
         categories: str | list[str] | None = None,
-        prefix: bool | None = None,
+        prefix: bool = False,
     ) -> list[str]:
         """Retrieves production codes filtered by the specified categories.
 
@@ -59,8 +59,8 @@ class Produksjonstilskudd:
             categories (Union[str, List[str], None], optional): Categories to filter by.
                 Can be a single category (str), a list of categories, or None.
                 Defaults to None, meaning use all categories.
-            prefix (bool | None, optional): Whether to prefix each code with 'pk_'.
-                Defaults to None, which is treated as False.
+            prefix (bool): Whether to prefix each code with 'pk_'.
+                Defaults to False.
 
         Raises:
             TypeError: If `prefix` is not a bool or `categories` is not a str, list, or None.
@@ -69,8 +69,6 @@ class Produksjonstilskudd:
             List[str]: A list of matching production codes (optionally prefixed).
         """
         # Input validation
-        if prefix is None:
-            prefix = False
         if not isinstance(prefix, bool):
             raise TypeError(f"prefix should be either True or False, received {prefix}")
         if categories is None:
@@ -97,7 +95,7 @@ class Produksjonstilskudd:
         return list_of_codes
 
     def get_codes_by_measurement(
-        self: "Produksjonstilskudd", measurement: str, prefix: bool | None = None
+        self: "Produksjonstilskudd", measurement: str, prefix: bool = False
     ) -> list[str]:
         """Retrieves production codes that match a specific measurement unit.
 
@@ -105,8 +103,8 @@ class Produksjonstilskudd:
 
         Args:
             measurement (str): The measurement unit to filter by (e.g., 'antall').
-            prefix (bool | None, optional): Whether to prefix each code with 'pk_'.
-                Defaults to None, which is treated as False.
+            prefix (bool): Whether to prefix each code with 'pk_'.
+                Defaults to False.
 
         Raises:
             ValueError: If the `measurement` is not one of the valid measurement units.
@@ -120,8 +118,6 @@ class Produksjonstilskudd:
             raise ValueError(
                 f"Invalid measurement unit: {measurement}. Must be one of {VALID_MEASUREMENT_UNITS}"
             )
-        if prefix is None:
-            prefix = False
         if not isinstance(prefix, bool):
             raise TypeError(f"prefix should be either True or False, received {prefix}")
 
