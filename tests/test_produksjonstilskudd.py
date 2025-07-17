@@ -3,9 +3,9 @@ from collections.abc import Generator
 import pytest
 from typeguard import suppress_type_checks
 
-from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import VALID_MEASUREMENT_UNITS
-from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import Produksjonskode
-from ssb_jordbruk_fagfunksjoner.produksjonstilskudd import Produksjonstilskudd
+from ssb_jordbruk_fagfunksjoner import VALID_MEASUREMENT_UNITS
+from ssb_jordbruk_fagfunksjoner import Produksjonskode
+from ssb_jordbruk_fagfunksjoner import Produksjonstilskudd
 
 
 @pytest.fixture(autouse=True)

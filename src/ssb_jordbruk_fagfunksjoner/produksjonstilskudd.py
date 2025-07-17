@@ -3,8 +3,11 @@
 Uses a registry pattern to build the Produksjonstilskudd codelist based on all currently created Produksjonskode objects, as they add themselves to the _registry list as they are created.
 """
 
+import logging
 import re
 from typing import ClassVar
+
+logger = logging.getLogger(__name__)
 
 VALID_MEASUREMENT_UNITS = {"antall", "dekar", "stykk", "kilo"}
 
@@ -24,13 +27,17 @@ class Produksjonstilskudd:
         `Produksjonskode` instances. It also compiles a sorted list of unique
         categories into `self.categories`.
         """
+        logger.debug("Instantiating Produksjonstilskudd.")
         self.codes = Produksjonskode._registry
+
+        logger.debug(f"Contains {len(self.codes)} different codes")
 
         categories = set()
         for code in self.codes:
             for group in code.groups:
                 categories.add(group)
         self.categories = list(sorted(categories))
+        logger.debug(f"Added {len(self.categories)} categories to the instance.\nCategories: {self.categories}")
 
     @staticmethod
     def _add_prefix(list_containing_codes: list[str]) -> list[str]:
@@ -220,6 +227,8 @@ class Produksjonskode:
         self.is_valid()
 
         Produksjonskode._registry.append(self)  # Registers itself in the registry
+
+        logger.debug(f"Instantiated code:\n{self}")
 
     def is_valid(self: "Produksjonskode") -> None:
         """Validates the Produksjonskode fields.
