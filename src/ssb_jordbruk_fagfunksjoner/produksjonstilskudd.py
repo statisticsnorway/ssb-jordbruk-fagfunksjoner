@@ -37,7 +37,9 @@ class Produksjonstilskudd:
             for group in code.groups:
                 categories.add(group)
         self.categories = list(sorted(categories))
-        logger.debug(f"Added {len(self.categories)} categories to the instance.\nCategories: {self.categories}")
+        logger.debug(
+            f"Added {len(self.categories)} categories to the instance.\nCategories: {self.categories}"
+        )
 
     @staticmethod
     def _add_prefix(list_containing_codes: list[str]) -> list[str]:
