@@ -85,9 +85,12 @@ with engine.connect() as conn:
     for row in result:
         print(row)
 
-Melk().fill(session)
+def assemble_database():
+    Melk().fill(session)
 
-with engine.connect() as conn:
-    result = conn.execute(text("SELECT * FROM melk"))
-    for row in result:
-        print(row)
+
+def test_query():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * FROM melk"))
+        for row in result:
+            print(row)
