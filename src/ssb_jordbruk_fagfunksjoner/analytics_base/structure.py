@@ -1,3 +1,5 @@
+import pandas as pd
+from sqlalchemy import text
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
@@ -21,6 +23,8 @@ class Enheter(Base):
 
     orgnr = Column(String, primary_key=True)
 
+    def fill(self):
+        ...
 
 class Slakt(Base):
     __tablename__ = "slakt"
@@ -40,6 +44,24 @@ class Melk(Base):
     økologisk = Column(String, primary_key=True)
     liter = Column(Integer)
 
+    def fill(self, session):
+        for _, row in pd.read_parquet("/buckets/produkt/leveranser/melk/klargjorte-data/melkeleveranser_p2025_v1.parquet").iterrows():
+            if int(row["mengde"]) > 0:
+                session.add(
+                    Melk(
+                        orgnr = str(row["orgnr"]),
+                        produkt = str(row["vare"]),
+                        økologisk = str(row["produkttype"]),
+                        liter = int(row["mengde"])
+                    )
+                )
+                try:
+                    session.commit()
+                except:
+                    print("OMG NO")
+                    session.rollback()
+
+
 
 class Korn(Base):
     __tablename__ = "korn"
@@ -56,3 +78,16 @@ Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
 session = Session()
+
+with engine.connect() as conn:
+    result = conn.execute(text("SELECT name FROM sqlite_master WHERE type='table'"))
+    print("Existing tables:")
+    for row in result:
+        print(row)
+
+Melk().fill(session)
+
+with engine.connect() as conn:
+    result = conn.execute(text("SELECT * FROM melk"))
+    for row in result:
+        print(row)
