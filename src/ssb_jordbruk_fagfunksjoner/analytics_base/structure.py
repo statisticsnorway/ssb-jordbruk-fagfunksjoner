@@ -1,17 +1,38 @@
+import logging
+import os
+
 import pandas as pd
-from sqlalchemy import text
 from sqlalchemy import Column
-from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import create_engine
+from sqlalchemy import event
+from sqlalchemy import text
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine("sqlite:///:memory:", echo=True)  # Hvorfor ikke ha i work/???
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+file_handler = logging.FileHandler("log_path.log", mode="a")
+formatter = logging.Formatter(
+    "%(asctime)s - %(levelname)s - %(name)s - %(funcName)s - %(message)s",
+)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
-# with engine.connect() as conn:
-#    conn.execute("PRAGMA foreign_keys = ON;")
+db_path = "/home/onyxia/work/analytics.sqlite"
+os.makedirs(os.path.dirname(db_path), exist_ok=True)
+engine = create_engine(f"sqlite:///{db_path}", echo=True)
+
+
+# Enable foreign keys for all connections
+def enable_foreign_keys(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
+
+
+event.listen(engine, "connect", enable_foreign_keys)
 
 Base = declarative_base()
 
@@ -23,13 +44,13 @@ class Enheter(Base):
 
     orgnr = Column(String, primary_key=True)
 
-    def fill(self):
-        ...
+    def fill(self): ...
+
 
 class Slakt(Base):
     __tablename__ = "slakt"
 
-    orgnr = Column(String, ForeignKey("enheter.orgnr"), primary_key=True)
+    orgnr = Column(String, primary_key=True)  # ForeignKey("enheter.orgnr"),
     dyr = Column(String, primary_key=True)
     økologisk = Column(String, primary_key=True)
     antall = Column(Integer)
@@ -39,34 +60,45 @@ class Slakt(Base):
 class Melk(Base):
     __tablename__ = "melk"
 
-    orgnr = Column(String, ForeignKey("enheter.orgnr"), primary_key=True)
+    orgnr = Column(String, primary_key=True)  # ForeignKey("enheter.orgnr"),
     produkt = Column(String, primary_key=True)
     økologisk = Column(String, primary_key=True)
     liter = Column(Integer)
 
     def fill(self, session):
-        for _, row in pd.read_parquet("/buckets/produkt/leveranser/melk/klargjorte-data/melkeleveranser_p2025_v1.parquet").iterrows():
+        logger.info("Starting insert into 'melk'.")
+        for _, row in (
+            pd.read_parquet(
+                "/buckets/produkt/leveranser/melk/klargjorte-data/melkeleveranser_p2025_v1.parquet"
+            )
+            .groupby(["orgnr", "vare", "produkttype"], as_index=False)
+            .agg({"mengde": "sum"})
+            .iterrows()
+        ):
             if int(row["mengde"]) > 0:
-                session.add(
-                    Melk(
-                        orgnr = str(row["orgnr"]),
-                        produkt = str(row["vare"]),
-                        økologisk = str(row["produkttype"]),
-                        liter = int(row["mengde"])
-                    )
-                )
                 try:
+                    session.add(
+                        Melk(
+                            orgnr=str(row["orgnr"]),
+                            produkt=str(row["vare"]),
+                            økologisk=str(row["produkttype"]),
+                            liter=int(row["mengde"]),
+                        )
+                    )
                     session.commit()
-                except:
-                    print("OMG NO")
+                    logger.debug("Comitted")
+                except Exception as e:
+                    logger.debug("OMG NO")
+                    logger.debug(row[["orgnr", "vare", "produkttype", "mengde"]])
                     session.rollback()
-
+                    raise e
+        logger.info("Successfully inserted into 'melk'.")
 
 
 class Korn(Base):
     __tablename__ = "korn"
 
-    orgnr = Column(String, ForeignKey("enheter.orgnr"), primary_key=True)
+    orgnr = Column(String, primary_key=True)  # ForeignKey("enheter.orgnr"),
     vekst = Column(String, primary_key=True)
     økologisk = Column(String, primary_key=True)
     matkvalitet = Column(String, primary_key=True)
@@ -85,6 +117,7 @@ with engine.connect() as conn:
     for row in result:
         print(row)
 
+
 def assemble_database():
     Melk().fill(session)
 
@@ -94,3 +127,8 @@ def test_query():
         result = conn.execute(text("SELECT * FROM melk"))
         for row in result:
             print(row)
+
+
+if __name__ == "__main__":
+    assemble_database()
+    test_query()
