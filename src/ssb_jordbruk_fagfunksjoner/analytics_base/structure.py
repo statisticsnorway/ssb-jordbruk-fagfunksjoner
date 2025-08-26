@@ -12,7 +12,7 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 file_handler = logging.FileHandler("log_path.log", mode="a")
 formatter = logging.Formatter(
     "%(asctime)s - %(levelname)s - %(name)s - %(funcName)s - %(message)s",
@@ -51,10 +51,47 @@ class Slakt(Base):
     __tablename__ = "slakt"
 
     orgnr = Column(String, primary_key=True)  # ForeignKey("enheter.orgnr"),
+    aar = Column(String, primary_key=True)
+    kvartal = Column(String, primary_key=True)
+    # maaned = Column(String, primary_key=True)
+    # dag = Column(String, primary_key=True)
     dyr = Column(String, primary_key=True)
     økologisk = Column(String, primary_key=True)
     antall = Column(Integer)
     vekt = Column(Integer)
+
+    def fill(self, session):
+        logger.info("Starting insert into 'slakt'.")
+        for _, row in (
+            pd.read_parquet(
+                "/buckets/produkt/leveranser/slakt/klargjorte-data/slakt_p2024_v1.parquet"
+            )
+            .groupby(["orgnr", "dyr", "økologisk", "aar", "kvartal"], as_index=False)
+            .agg({"antall": "sum", "vekt": "sum"})
+            .iterrows()
+        ):
+            if int(row["antall"]) > 0 or int(row["vekt"]) > 0:
+                try:
+                    session.add(
+                        Slakt(
+                            orgnr=str(row["orgnr"]),
+                            aar=str(row["aar"]),
+                            kvartal=str(row["kvartal"]),
+                            dyr=str(row["dyr"]),
+                            økologisk=str(row["økologisk"]),
+                            antall=int(row["antall"]),
+                            vekt=int(row["vekt"])
+                        )
+                    )
+                    session.commit()
+                    logger.debug("Comitted")
+                except Exception as e:
+                    logger.debug("OMG NO")
+                    logger.debug(row)
+                    session.rollback()
+                    raise e
+            logger.info("Successfully inserted into 'slakt'.")
+
 
 
 class Melk(Base):
@@ -119,7 +156,9 @@ with engine.connect() as conn:
 
 
 def assemble_database():
+    Slakt().fill(session)
     Melk().fill(session)
+
 
 
 def test_query():
