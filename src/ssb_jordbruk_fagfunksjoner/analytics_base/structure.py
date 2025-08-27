@@ -1,5 +1,7 @@
 import logging
 import os
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 from sqlalchemy import Column
@@ -11,9 +13,19 @@ from sqlalchemy import text
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+environment = os.getenv("DAPLA_ENVIRONMENT").lower()
+bruker = os.getenv("DAPLA_USER")[:3]
+tjeneste = os.getenv("DAPLA_SERVICE").lower()
+
+tz = ZoneInfo('Europe/Oslo')
+timestamp = datetime.now(tz)
+
+# Format as year_month_day_hour_minutes
+timestamp = timestamp.strftime('%Y_%m_%d_%H_%M')
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler("log_path.log", mode="a")
+file_handler = logging.FileHandler(f"/buckets/produkt/temp/oppdragsbase/logs/analytics_assembly_{environment}_{bruker}_{tjeneste}_{timestamp}.log", mode="a") # Save log to bucket
 formatter = logging.Formatter(
     "%(asctime)s - %(levelname)s - %(name)s - %(funcName)s - %(message)s",
 )
@@ -37,6 +49,11 @@ event.listen(engine, "connect", enable_foreign_keys)
 Base = declarative_base()
 
 # TODO lage en fill() metode i hver som leser inn data.
+
+def read_and_log(path):
+    data = pd.read_parquet(path)
+    logger.info(f"Reading file: {path}\nShape: {data.shape}\nColumns: {data.columns}")
+    return data
 
 
 class Enheter(Base):
