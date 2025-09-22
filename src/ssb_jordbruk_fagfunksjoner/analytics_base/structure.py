@@ -5,6 +5,7 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 from sqlalchemy import Column
+from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import create_engine
@@ -59,15 +60,43 @@ def read_and_log(path):
 class Enheter(Base):
     __tablename__ = "enheter"
 
+    aar = Column(String, primary_key=True)
     orgnr = Column(String, primary_key=True)
+    org_form = Column(String)
+    driftssenter = Column(String)
+    alder = Column(Integer)
+    kjonn = Column(String)
 
-    def fill(self): ...
+
+    def fill(self, session):
+        logger.info("Starting insert into 'enheter'")
+        for _, row in (
+            pd.read_parquet("/buckets/produkt/produksjonstilskudd/klargjorte-data/produksjonstilskudd_wide_p2024_l5.parquet")
+        ).iterrows():
+            try:
+                session.add(
+                    Enheter(
+                        aar="2024",# TODO: Fix
+                        orgnr=str(row["orgnr"]),
+                        org_form=str(row["org_form"]),
+                        driftssenter=str(row["driftssenter"]),
+                        alder=int(row["alder"]),
+                        kjonn=str(row["kjonn"])
+                    )
+                )
+                session.commit()
+                logger.debug("Comitted")
+            except Exception as e:
+                logger.debug("OMG NO")
+                logger.debug(row)
+                session.rollback()
+                raise e
 
 
 class Slakt(Base):
     __tablename__ = "slakt"
 
-    orgnr = Column(String, primary_key=True)  # ForeignKey("enheter.orgnr"),
+    orgnr = ForeignKey("enheter.orgnr", primary_key=True),
     aar = Column(String, primary_key=True)
     kvartal = Column(String, primary_key=True)
     # maaned = Column(String, primary_key=True)
@@ -114,7 +143,7 @@ class Slakt(Base):
 class Melk(Base):
     __tablename__ = "melk"
 
-    orgnr = Column(String, primary_key=True)  # ForeignKey("enheter.orgnr"),
+    orgnr = ForeignKey("enheter.orgnr", primary_key=True),
     produkt = Column(String, primary_key=True)
     økologisk = Column(String, primary_key=True)
     liter = Column(Integer)
@@ -123,7 +152,7 @@ class Melk(Base):
         logger.info("Starting insert into 'melk'.")
         for _, row in (
             pd.read_parquet(
-                "/buckets/produkt/leveranser/melk/klargjorte-data/melkeleveranser_p2025_v1.parquet"
+                "/buckets/produkt/leveranser/melk/klargjorte-data/melkeleveranser_p2024_v1.parquet"
             )
             .groupby(["orgnr", "vare", "produkttype"], as_index=False)
             .agg({"mengde": "sum"})
@@ -151,8 +180,8 @@ class Melk(Base):
 
 class Korn(Base):
     __tablename__ = "korn"
-
-    orgnr = Column(String, primary_key=True)  # ForeignKey("enheter.orgnr"),
+    
+    orgnr = ForeignKey("enheter.orgnr", primary_key=True),
     vekst = Column(String, primary_key=True)
     økologisk = Column(String, primary_key=True)
     matkvalitet = Column(String, primary_key=True)
@@ -173,6 +202,7 @@ with engine.connect() as conn:
 
 
 def assemble_database():
+    Enheter().fill(session)
     Slakt().fill(session)
     Melk().fill(session)
 
