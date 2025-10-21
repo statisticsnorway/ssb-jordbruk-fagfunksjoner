@@ -952,7 +952,7 @@ Produksjonskode(
 Produksjonskode(
     code="290",
     label="Brakka areal",
-    description="Gir ikke tilskudd lenger fra og med 2026.",
+    description="Gir ikke tilskudd lenger fra og med 2025.",
     groups=[""],
     measured_in="dekar",
 )
@@ -1312,7 +1312,7 @@ Produksjonskode(
 Produksjonskode(
     code="876",
     label="Areal brakka for å bekjempe ugras, økologisk eller 2. års karens",
-    description="Gir ikke tilskudd lenger fra og med 2026.",
+    description="Gir ikke tilskudd lenger fra og med 2025.",
     groups=["karens", "økologisk"],
     measured_in="dekar",
 )
