@@ -952,7 +952,7 @@ Produksjonskode(
 Produksjonskode(
     code="290",
     label="Brakka areal",
-    description="",
+    description="Gir ikke tilskudd lenger fra og med 2025.",
     groups=[""],
     measured_in="dekar",
 )
@@ -1312,7 +1312,7 @@ Produksjonskode(
 Produksjonskode(
     code="876",
     label="Areal brakka for å bekjempe ugras, økologisk eller 2. års karens",
-    description="",
+    description="Gir ikke tilskudd lenger fra og med 2025.",
     groups=["karens", "økologisk"],
     measured_in="dekar",
 )
@@ -1339,4 +1339,52 @@ Produksjonskode(
     description="",
     groups=["karens"],
     measured_in="dekar",
+)
+
+Produksjonskode(
+    code="885",
+    label="Økologisk frukt",
+    description="Økologisk frukt med minstekvantum 2000kg. Nøtter er inkludert her.",
+    groups=["frukt", "økologisk"],
+    measured_in="kilo",
+)
+
+Produksjonskode(
+    code="886",
+    label="Økologiske bær",
+    description="",
+    groups=["bær", "økologisk"],
+    measured_in="kilo",
+)
+
+Produksjonskode(
+    code="887",
+    label="Økologisk salat",
+    description="",
+    groups=["grønnsaker", "økologisk"],
+    measured_in="antall",
+)
+
+Produksjonskode(
+    code="888",
+    label="Økologiske urter",
+    description="",
+    groups=["økologisk"],
+    measured_in="antall",
+)
+
+Produksjonskode(
+    code="889",
+    label="Økologiske grønnsaker",
+    description="",
+    groups=["grønnsaker", "økologisk"],
+    measured_in="kilo",
+)
+
+Produksjonskode(
+    code="890",
+    label="Økologiske poteter",
+    description="",
+    groups=["økologisk"],
+    measured_in="kilo",
 )

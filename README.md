@@ -18,7 +18,6 @@
 [pypi status]: https://pypi.org/project/ssb-jordbruk-fagfunksjoner/
 [documentation]: https://statisticsnorway.github.io/ssb-jordbruk-fagfunksjoner
 [tests]: https://github.com/statisticsnorway/ssb-jordbruk-fagfunksjoner/actions?workflow=Tests
-
 [sonarcov]: https://sonarcloud.io/summary/overall?id=statisticsnorway_ssb-jordbruk-fagfunksjoner
 [sonarquality]: https://sonarcloud.io/summary/overall?id=statisticsnorway_ssb-jordbruk-fagfunksjoner
 [pre-commit]: https://github.com/pre-commit/pre-commit

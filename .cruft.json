@@ -1,7 +1,7 @@
 {
   "template": "https://github.com/statisticsnorway/ssb-pypitemplate.git",
-  "commit": "0d33fca0d1c29c79aef9c7053e36d9e7cdd2bd20",
-  "checkout": "2025.2.19",
+  "commit": "dcc4de1788caf9123ee2a56ca3828eee8be383a8",
+  "checkout": "2026.2.24",
   "context": {
     "cookiecutter": {
       "project_name": "ssb-jordbruk-fagfunksjoner",
@@ -16,6 +16,8 @@
       "license": "MIT",
       "development_status": "Development Status :: 3 - Alpha",
       "code_quality_level": "Medium",
+      "dependency_manager_tool": "poetry",
+      "department_number": "",
       "_copy_without_render": [
         "*.rst_t"
       ],
@@ -24,7 +26,7 @@
         "trim_blocks": true
       },
       "_template": "https://github.com/statisticsnorway/ssb-pypitemplate.git",
-      "_commit": "0d33fca0d1c29c79aef9c7053e36d9e7cdd2bd20"
+      "_commit": "dcc4de1788caf9123ee2a56ca3828eee8be383a8"
     }
   },
   "directory": null
